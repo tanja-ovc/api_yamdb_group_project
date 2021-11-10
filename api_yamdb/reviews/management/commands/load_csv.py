@@ -20,9 +20,7 @@ class Command(BaseCommand):
         parser.add_argument('model_name', type=str, help='name of model')
 
     def get_csv_file(self, filename):
-        base_dir = settings.BASE_DIR
-        file_path = os.path.join(base_dir, 'static', 'data', filename)
-        return file_path
+        return os.path.join(settings.BASE_DIR, 'static', 'data', filename)
 
     def clear_model(self, model_name):
         try:
@@ -61,8 +59,7 @@ class Command(BaseCommand):
             self.load_data_to_db(model, csv_file, model_name)
 
     def handle(self, *args, **kwargs):
-        model_name = kwargs.get('model_name')
-        model_name = model_name.lower()
+        model_name = kwargs.get('model_name').lower()
         if model_name == 'all':
             self.load_all_models()
         else:
