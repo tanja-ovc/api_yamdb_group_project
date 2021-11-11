@@ -3,6 +3,10 @@ from django.db.models.constraints import UniqueConstraint
 
 from users.models import MyUser as User
 
+# удалить этот класс
+class Titles(models.Model):
+    pass
+
 
 class Review(models.Model):
     title = models.ForeignKey(
@@ -21,7 +25,7 @@ class Review(models.Model):
         constraints = (
             UniqueConstraint(
                 fields=('author', 'title',), name='unique_review'
-            )
+            ),
         )
 
     def __str__(self):
