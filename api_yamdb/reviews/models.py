@@ -26,7 +26,7 @@ class Genre(models.Model):
 
 class Title(models.Model):
     name = models.CharField(max_length=200)
-    year = models.DateField(blank=True, null=True)
+    year = models.IntegerField(blank=True, null=True)
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, related_name='titles',
         blank=True, null=True)
@@ -42,6 +42,9 @@ class Genre_Title(models.Model):
     genre = models.ForeignKey(
         Genre, on_delete=models.CASCADE, related_name='titles'
     )
+
+    def __str__(self):
+        return f'Отношение {self.title} к жанру {self.genre}'
 
 
 class Review(models.Model):
