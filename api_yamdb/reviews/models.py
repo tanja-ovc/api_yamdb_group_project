@@ -3,6 +3,10 @@ from django.db.models.constraints import UniqueConstraint
 
 from users.models import MyUser as User
 
+# удалить этот класс
+class Titles(models.Model):
+    pass
+
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
