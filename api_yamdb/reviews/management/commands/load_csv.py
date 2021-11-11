@@ -4,10 +4,17 @@ import os
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 
-from reviews.models import Review
+from reviews.models import Category, Comment, Genre, Review, Title, Genre_Title
+from users.models import MyUser as User
 
 MODEL_NAME_FILE = {
+    'category': (Category, 'category.csv'),
+    'comment': (Comment, 'comments.csv'),
+    'genre': (Genre, 'genre.csv'),
+    'genre_title': (Genre_Title, 'genre_title.csv'),
     'review': (Review, 'review.csv',),
+    'title': (Title, 'titles.csv'),
+    'user': (User, 'users.csv'),
 }
 
 
