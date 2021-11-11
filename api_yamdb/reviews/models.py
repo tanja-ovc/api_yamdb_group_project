@@ -3,21 +3,18 @@ from django.db.models.constraints import UniqueConstraint
 
 from users.models import MyUser as User
 
-# удалить этот класс
-class Titles(models.Model):
-    pass
-
 
 class Category(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+
+    def __str__(self):
+        return self.name
+
 
 
 class Genre(models.Model):
@@ -60,7 +57,7 @@ class Review(models.Model):
         User, on_delete=models.CASCADE, related_name='reviews'
     )
     score = models.PositiveSmallIntegerField(
-        choices=[(n, str(n)) for n in range(1, 11)], default=5
+        choices=[(n, str(n)) for n in range(1, 11)],
     )
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
