@@ -16,9 +16,10 @@ router.register(
     views.CommentViewSet,
     basename='comments'
 )
-
+router.register('users', views.MyUserViewSet)
 
 urlpatterns = [
     path('v1/', include(router.urls)),
     path('v1/auth/signup/', views.send_confirmation_code),
+    path('v1/auth/token/', views.compare_confirmation_code),
 ]
