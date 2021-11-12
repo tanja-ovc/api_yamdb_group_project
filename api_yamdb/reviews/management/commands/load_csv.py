@@ -8,13 +8,19 @@ from reviews.models import Category, Comment, Genre, Review, Title, Genre_Title
 from users.models import MyUser as User
 
 MODEL_NAME_FILE = {
+    'user': (User, 'users.csv'),
     'category': (Category, 'category.csv'),
-    'comment': (Comment, 'comments.csv'),
     'genre': (Genre, 'genre.csv'),
+    'title': (Title, 'titles.csv'),
     'genre_title': (Genre_Title, 'genre_title.csv'),
     'review': (Review, 'review.csv',),
-    'title': (Title, 'titles.csv'),
-    'user': (User, 'users.csv'),
+    'comment': (Comment, 'comments.csv'),
+}
+
+CRUTCH = {
+    'author': 'author_id',
+    'review': 'review_id',
+    'category': 'category_id'
 }
 
 
@@ -42,18 +48,19 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(message))
 
     def load_data_to_db(self, model, csv_file, model_name):
-        field_names = [f.name for f in model._meta.get_fields()]
         file_path = self.get_csv_file(csv_file)
         self.print_to_terminal(f'load file: {csv_file} to model: {model_name}')
-        line = 0
+        line = 1
         try:
             with open(file_path) as file:
                 csv_reader = csv.reader(file, delimiter=',')
+                field_names = [
+                    CRUTCH.get(field, field) for field in next(csv_reader)
+                ]
                 self.clear_model(model)
                 for row in csv_reader:
                     if row != '' and line > 0:
-                        data = [row[i] for i in range(1, len(field_names))]
-                        params = dict(zip(field_names[1:], data))
+                        params = dict(zip(field_names, row))
                         _, created = model.objects.get_or_create(**params)
                     line += 1
             self.print_to_terminal(
