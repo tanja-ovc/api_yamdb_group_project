@@ -1,10 +1,13 @@
 import random
 import string
 
+from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
+from django.contrib.auth.hashers import make_password, check_password
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import AccessToken
 
 from users.models import MyUser
 from api.serializers import (SendConfirmationCodeSerializer,
@@ -27,15 +30,28 @@ def send_confirmation_code(request):
         confirmation_code = generate_confirmation_code()
         MyUser.objects.update_or_create(
             defaults={
-                'confirmation_code': confirmation_code
+                'confirmation_code': make_password(confirmation_code, salt=None, hasher='argon2')
             },
             email=email,
             username=username,
         )
-        subject = 'Ваш код подтверждения на YaMDb'
+        subject = 'Your confirmation code for YaMDb'
         message = f'Код подтверждения {confirmation_code}'
         send_mail(subject, message, 'support@yamdb.ru', [email])
         return Response(f'Код подтверждения отправлен на адрес {email}', status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def compare_confirmation_code(request):
+    serializer = CompareConfirmationCodesSerializer(data=request.data)
+    if serializer.is_valid():
+        username = request.data.get('username')
+        confirmation_code = request.data.get('confirmation_code')
+        user = get_object_or_404(MyUser, username=username)
+        if check_password(confirmation_code, user.confirmation_code):
+            return Response({'token': f'{AccessToken.for_user(user)}'})
+        return Response({'confirmation_code': 'Неправильный код'})
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

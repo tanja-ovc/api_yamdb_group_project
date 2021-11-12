@@ -1,12 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from api.views import MyUserViewSet, send_confirmation_code
+from api import views
 
 router = DefaultRouter()
-router.register('users', MyUserViewSet)
+router.register('users', views.MyUserViewSet)
 
 urlpatterns = [
     path('v1/', include(router.urls)),
-    path('v1/auth/signup/', send_confirmation_code),
+    path('v1/auth/signup/', views.send_confirmation_code),
+    path('v1/auth/token/', views.compare_confirmation_code),
 ]
