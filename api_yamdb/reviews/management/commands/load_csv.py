@@ -16,7 +16,7 @@ MODEL_NAME_FILE = {
     'review': (Review, 'review.csv',),
     'comment': (Comment, 'comments.csv'),
 }
-
+# Костыль для корректного добавления моделей с ForeignKey полями
 CRUTCH = {
     'author': 'author_id',
     'review': 'review_id',
