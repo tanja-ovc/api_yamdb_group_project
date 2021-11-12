@@ -13,7 +13,7 @@ from users.models import MyUser
 from api.serializers import (SendConfirmationCodeSerializer,
                              CompareConfirmationCodesSerializer,
                              MyUserSerializer)
-
+from api.permissions import AdminPermissions
 
 def generate_confirmation_code():
     chars = string.digits + string.ascii_letters
@@ -58,3 +58,4 @@ def compare_confirmation_code(request):
 class MyUserViewSet(viewsets.ModelViewSet):
     queryset = MyUser.objects.all()
     serializer_class = MyUserSerializer
+    permission_classes = (AdminPermissions,)
