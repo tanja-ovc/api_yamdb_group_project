@@ -1,5 +1,8 @@
-from .review_comment_view import ReviewViewSet, CommentViewSet
-from .auth_user_view import MyUserViewSet, send_confirmation_code, compare_confirmation_code
+from .auth_user_view import (MyUserViewSet,
+                             send_confirmation_code,
+                             compare_confirmation_code,
+                             UserAPI,)
+
 
 __all__ = [
     'MyUserViewSet',
@@ -7,4 +10,5 @@ __all__ = [
     'ReviewViewSet',
     'CommentViewSet',
     'compare_confirmation_code',
+    'UserAPI',
 ]
