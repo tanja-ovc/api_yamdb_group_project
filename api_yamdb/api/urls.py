@@ -5,7 +5,7 @@ from api import views
 
 router = DefaultRouter()
 router.register('users', views.MyUserViewSet, basename='users')
-router.register('titles', views.TitleViewSet, basename='titles')
+# router.register('titles', views.TitleViewSet, basename='titles')
 router.register(
     r'titles/(?P<title_id>\d+)/reviews',
     views.ReviewViewSet,
