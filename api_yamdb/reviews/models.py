@@ -16,7 +16,6 @@ class Category(models.Model):
         return self.name
 
 
-
 class Genre(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
