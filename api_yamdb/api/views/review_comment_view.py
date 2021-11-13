@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 
 from reviews.models import Title
 from api.serializers import ReviewSerializer, CommentSerializer
-from api.permissions import OwnerOrReadOnly
+from api.permissions import AdminAuthorModeratorOrReadOnly
 
 PERMISSION_ERROR = 'Изменение чужого контента запрещено!'
 
@@ -31,7 +31,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [OwnerOrReadOnly]
+    permission_classes = [AdminAuthorModeratorOrReadOnly]
 
     def get_queryset(self):
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
