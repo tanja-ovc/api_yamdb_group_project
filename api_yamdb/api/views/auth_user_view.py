@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
@@ -64,3 +65,22 @@ class MyUserViewSet(viewsets.ModelViewSet):
     serializer_class = MyUserSerializer
     permission_classes = (AdminPermissions,)
     lookup_field = 'username'
+
+
+class UserAPI(APIView):
+    def get(self, request):
+        if request.user.is_authenticated:
+            user = get_object_or_404(MyUser, username=request.user.username)
+            serializer = MyUserSerializer(user)
+            return Response(serializer.data)
+        return Response('Для просмотра нужно авторизоваться', status=status.HTTP_401_UNAUTHORIZED)
+
+    def patch(self, request):
+        if request.user.is_authenticated:
+            user = get_object_or_404(MyUser, username=request.user.username)
+            serializer = MyUserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.validated_data.pop('role', None)
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response('Для изменения необходимо авторизоваться', status=status.HTTP_401_UNAUTHORIZED)
