@@ -25,6 +25,10 @@ def send_confirmation_code(request):
     serializer = SendConfirmationCodeSerializer(data=request.data)
     email = request.data.get('email')
     username = request.data.get('username')
+    if username == 'me':
+        return Response('Пользователя с таким именем создать нельзя', status=status.HTTP_400_BAD_REQUEST)
+    if MyUser.objects.filter(email=email).exists() or MyUser.objects.filter(username=username).exists():
+        return Response('Такой email уже зарегистрирован', status=status.HTTP_400_BAD_REQUEST)
 
     if serializer.is_valid():
         confirmation_code = generate_confirmation_code()
@@ -38,7 +42,7 @@ def send_confirmation_code(request):
         subject = 'Your confirmation code for YaMDb'
         message = f'Код подтверждения {confirmation_code}'
         send_mail(subject, message, 'support@yamdb.ru', [email])
-        return Response(f'Код подтверждения отправлен на адрес {email}', status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -51,7 +55,7 @@ def compare_confirmation_code(request):
         user = get_object_or_404(MyUser, username=username)
         if check_password(confirmation_code, user.confirmation_code):
             return Response({'token': f'{AccessToken.for_user(user)}'})
-        return Response({'confirmation_code': 'Неправильный код'})
+        return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
