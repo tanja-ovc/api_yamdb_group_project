@@ -11,6 +11,7 @@ class MyUserManager(UserManager):
             username=username,
             is_staff=True,
             is_superuser=True,
+            role='admin',
             **kwargs
         )
         user.is_admin = True

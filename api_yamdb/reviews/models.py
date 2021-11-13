@@ -29,7 +29,7 @@ class Title(models.Model):
     year = models.IntegerField(blank=True, null=True)
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, related_name='titles',
-        blank=True, null=True)
+        blank=True, null=True, db_constraint=False)
 
     def __str__(self):
         return self.name
@@ -37,10 +37,12 @@ class Title(models.Model):
 
 class Genre_Title(models.Model):
     title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='genres'
+        Title, on_delete=models.CASCADE, related_name='genres',
+        db_constraint=False
     )
     genre = models.ForeignKey(
-        Genre, on_delete=models.CASCADE, related_name='titles'
+        Genre, on_delete=models.CASCADE, related_name='titles',
+        db_constraint=False
     )
 
     def __str__(self):
@@ -49,11 +51,13 @@ class Genre_Title(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='reviews'
+        Title, on_delete=models.CASCADE, related_name='reviews',
+        db_constraint=False
     )
     text = models.TextField()
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='reviews'
+        User, on_delete=models.CASCADE, related_name='reviews',
+        db_constraint=False
     )
     score = models.PositiveSmallIntegerField(
         choices=[(n, str(n)) for n in range(1, 11)],
@@ -73,11 +77,13 @@ class Review(models.Model):
 
 class Comment(models.Model):
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE, related_name='comments'
+        Review, on_delete=models.CASCADE, related_name='comments',
+        db_constraint=False
     )
     text = models.TextField()
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments'
+        User, on_delete=models.CASCADE, related_name='comments',
+        db_constraint=False
     )
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
