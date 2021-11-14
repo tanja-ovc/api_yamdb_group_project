@@ -1,10 +1,17 @@
-# from rest_framework import serializers
+from rest_framework import filters
+from rest_framework import serializers
 
-# from reviews.models import Genre
+from api.permissions import AdminOrReadOnly
+from reviews.models import Genre
 
 
-# class GenreSerializer(serializers.ModelSerializer):
+class GenreSerializer(serializers.ModelSerializer):
+    genre_name = serializers.CharField(source='name')
 
-#     class Meta:
-#         fields = ('id', 'name', 'slug')
-#         model = Genre
+    permission_classes = (AdminOrReadOnly,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('genre_name',)
+
+    class Meta:
+        fields = ('id', 'genre_name', 'slug')
+        model = Genre

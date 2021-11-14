@@ -1,10 +1,17 @@
-# from rest_framework import serializers
+from rest_framework import filters
+from rest_framework import serializers
 
-# from reviews.models import Category
+from api.permissions import AdminOrReadOnly
+from reviews.models import Category
 
 
-# class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='name')
 
-#     class Meta:
-#         fields = ('id', 'name', 'slug')
-#         model = Category
+    permission_classes = (AdminOrReadOnly,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('category_name',)
+
+    class Meta:
+        fields = ('id', 'category_name', 'slug')
+        model = Category
