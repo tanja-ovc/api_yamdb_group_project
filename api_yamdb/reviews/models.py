@@ -16,6 +16,7 @@ class Category(models.Model):
         return self.name
 
 
+
 class Genre(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
@@ -29,7 +30,7 @@ class Title(models.Model):
     year = models.IntegerField(blank=True, null=True)
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, related_name='titles',
-        blank=True, null=True, db_constraint=False)
+        blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -37,12 +38,10 @@ class Title(models.Model):
 
 class Genre_Title(models.Model):
     title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='genres',
-        db_constraint=False
+        Title, on_delete=models.CASCADE, related_name='genres'
     )
     genre = models.ForeignKey(
-        Genre, on_delete=models.CASCADE, related_name='titles',
-        db_constraint=False
+        Genre, on_delete=models.CASCADE, related_name='titles'
     )
 
     def __str__(self):
@@ -51,13 +50,11 @@ class Genre_Title(models.Model):
 
 class Review(models.Model):
     title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='reviews',
-        db_constraint=False
+        Title, on_delete=models.CASCADE, related_name='reviews'
     )
     text = models.TextField()
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='reviews',
-        db_constraint=False
+        User, on_delete=models.CASCADE, related_name='reviews'
     )
     score = models.PositiveSmallIntegerField(
         choices=[(n, str(n)) for n in range(1, 11)],
@@ -77,13 +74,11 @@ class Review(models.Model):
 
 class Comment(models.Model):
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE, related_name='comments',
-        db_constraint=False
+        Review, on_delete=models.CASCADE, related_name='comments'
     )
     text = models.TextField()
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='comments',
-        db_constraint=False
+        User, on_delete=models.CASCADE, related_name='comments'
     )
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 

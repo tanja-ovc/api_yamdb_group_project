@@ -3,7 +3,6 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.db import models
 
 from reviews.models import Category, Comment, Genre, Review, Title, Genre_Title
 from users.models import MyUser as User
@@ -16,6 +15,12 @@ MODEL_NAME_FILE = {
     'genre_title': (Genre_Title, 'genre_title.csv'),
     'review': (Review, 'review.csv',),
     'comment': (Comment, 'comments.csv'),
+}
+# Костыль для корректного добавления моделей с ForeignKey полями
+CRUTCH = {
+    'author': 'author_id',
+    'review': 'review_id',
+    'category': 'category_id'
 }
 
 
@@ -42,25 +47,17 @@ class Command(BaseCommand):
     def print_to_terminal(self, message):
         self.stdout.write(self.style.SUCCESS(message))
 
-    def get_fild_names(self, model, headers):
-        field_names = []
-        for field in model._meta.fields:
-            if field.name in headers or (field.name + '_id') in headers:
-                if field.__class__ == models.ForeignKey:
-                    field_names.append(field.name + "_id")
-                else:
-                    field_names.append(field.name)
-        return field_names
-
     def load_data_to_db(self, model, csv_file, model_name):
         file_path = self.get_csv_file(csv_file)
         self.print_to_terminal(f'load file: {csv_file} to model: {model_name}')
-        line = 0
+        line = 1
         try:
             with open(file_path) as file:
                 csv_reader = csv.reader(file, delimiter=',')
+                field_names = [
+                    CRUTCH.get(field, field) for field in next(csv_reader)
+                ]
                 self.clear_model(model)
-                field_names = self.get_fild_names(model, next(csv_reader))
                 for row in csv_reader:
                     if row != '' and line > 0:
                         params = dict(zip(field_names, row))
