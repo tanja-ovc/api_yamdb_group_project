@@ -5,14 +5,14 @@ from django.contrib.auth.models import (
 
 
 class MyUserManager(UserManager):
-    def create_superuser(self, email, username, password=None, **kwargs):
+    def create_superuser(self, email, username, role, bio, password=None):
         user = self.create_user(
             email=email,
             username=username,
             is_staff=True,
             is_superuser=True,
             role='admin',
-            **kwargs
+            bio=bio,
         )
         user.is_admin = True
         user.set_password(password)
@@ -21,6 +21,7 @@ class MyUserManager(UserManager):
 
 
 class MyUser(AbstractUser):
+    email = models.EmailField(help_text='email address', blank=False, unique=True)
     bio = models.TextField(max_length=1000, blank=True)
     is_admin = models.BooleanField(default=False)
     confirmation_code = models.CharField(max_length=20, default=None, blank=True, null=True)
