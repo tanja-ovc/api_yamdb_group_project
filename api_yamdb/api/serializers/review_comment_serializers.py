@@ -8,8 +8,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     )
 
     def validate_score(self, value):
-        incorrect_value = value not in [i for i in range(1, 11)]
-        if not all([isinstance(value, int), incorrect_value]):
+        if not isinstance(value, int) or value not in range(1, 11):
             raise serializers.ValidationError(
                 'Оценка должна быть целым числом в диапазоне от 1 до 10'
             )
