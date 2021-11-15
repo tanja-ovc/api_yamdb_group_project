@@ -5,14 +5,12 @@ from django.contrib.auth.models import (
 
 
 class MyUserManager(UserManager):
-    def create_superuser(self, email, username, role, bio, password=None):
+    def create_superuser(self, email, username, role='admin', bio=None, password=None):
         user = self.create_user(
             email=email,
             username=username,
             is_staff=True,
             is_superuser=True,
-            role='admin',
-            bio=bio,
         )
         user.is_admin = True
         user.set_password(password)
