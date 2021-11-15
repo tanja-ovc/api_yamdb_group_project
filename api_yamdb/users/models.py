@@ -2,10 +2,11 @@ from django.db import models
 from django.contrib.auth.models import (
     AbstractUser, UserManager
 )
+from django.contrib.auth.hashers import make_password
 
 
 class MyUserManager(UserManager):
-    def create_superuser(self, email, username, role='admin', bio=None, password=None):
+    def create_superuser(self, email, username, role='user', bio=None, password=None):
         user = self.create_user(
             email=email,
             username=username,
@@ -13,7 +14,9 @@ class MyUserManager(UserManager):
             is_superuser=True,
         )
         user.is_admin = True
+        user.role = 'admin'
         user.set_password(password)
+        user.confirmation_code = make_password('00000', salt=None, hasher='argon2')
         user.save(using=self._db)
         return user
 
