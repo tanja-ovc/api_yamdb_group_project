@@ -30,23 +30,15 @@ class Title(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.SET_NULL, related_name='titles',
         blank=True, null=True, db_constraint=False)
+    genre = models.ManyToManyField(Genre, related_name='titles')
 
     def __str__(self):
         return self.name
 
 
-class Genre_Title(models.Model):
-    title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='genres',
-        db_constraint=False
-    )
-    genre = models.ForeignKey(
-        Genre, on_delete=models.CASCADE, related_name='titles',
-        db_constraint=False
-    )
-
-    def __str__(self):
-        return f'Отношение {self.title} к жанру {self.genre}'
+# class Genre_Title(models.Model):
+#     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+#     title = models.ForeignKey(Title, on_delete=models.CASCADE)
 
 
 class Review(models.Model):
