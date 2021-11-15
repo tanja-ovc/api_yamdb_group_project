@@ -5,6 +5,16 @@ from api import views
 
 router = DefaultRouter()
 router.register('users', views.MyUserViewSet)
+router.register(
+    r'titles/(?P<title_id>\d+)/reviews',
+    views.ReviewViewSet,
+    basename='reviews'
+)
+router.register(
+    r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
+    views.CommentViewSet,
+    basename='comments'
+)
 
 urlpatterns = [
     path('v1/auth/signup/', views.send_confirmation_code),
