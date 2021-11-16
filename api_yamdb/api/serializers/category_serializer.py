@@ -4,8 +4,7 @@ from reviews.models import Category
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source='name')
 
     class Meta:
-        fields = ('category_name', 'slug')
+        fields = ('name', 'slug')
         model = Category

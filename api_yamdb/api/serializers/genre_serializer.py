@@ -4,8 +4,7 @@ from reviews.models import Genre
 
 
 class GenreSerializer(serializers.ModelSerializer):
-    genre_name = serializers.CharField(source='name')
 
     class Meta:
-        fields = ('genre_name', 'slug')
+        fields = ('name', 'slug')
         model = Genre
