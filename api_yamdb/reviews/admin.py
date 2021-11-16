@@ -20,11 +20,11 @@ class TitleAdmin(admin.ModelAdmin):
 
 
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('author', 'text', 'title', 'score', 'pub_date')
+    list_display = ('id', 'author', 'text', 'title', 'score', 'pub_date')
 
 
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('author', 'text', 'review', 'pub_date')
+    list_display = ('id', 'author', 'text', 'review', 'pub_date')
 
 
 admin.site.register(Category, CategoryAdmin)
