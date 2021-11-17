@@ -7,7 +7,9 @@ from django.core.management.base import BaseCommand, CommandError
 
 MODEL_DATA = {
     'user': ('users_myuser',
-             'id, username, email, role, bio, first_name, last_name',
+             ('id, username, email, role, bio, first_name, last_name, ' 
+             'is_admin, password, is_superuser, is_staff, is_active, ' 
+             'date_joined'),
              'users.csv'),
     'category': ('reviews_category', 'id, name, slug', 'category.csv'),
     'genre': ('reviews_genre', 'id, name, slug', 'genre.csv'),
@@ -66,6 +68,8 @@ class Command(BaseCommand):
                 self.clear_table(table_name)
                 for row in csv_reader:
                     if row != '' and line > 0:
+                        while len(row) < len(fields.split()):
+                            row.append('False')
                         self.insert_to_db(table_name, fields, row)
                     line += 1
             self.print_to_terminal(
