@@ -25,6 +25,7 @@ MODEL_DATA = {
 def get_csv_file(filename):
     return os.path.join(settings.BASE_DIR, 'static', 'data', filename)
 
+
 def get_db_file():
     return os.path.join(settings.BASE_DIR, 'db.sqlite3')
 
