@@ -7,7 +7,7 @@ from api.serializers import (CompareConfirmationCodesSerializer,
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, filters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -77,6 +77,8 @@ class MyUserViewSet(viewsets.ModelViewSet):
     serializer_class = MyUserSerializer
     permission_classes = (AdminPermissions,)
     lookup_field = 'username'
+    filter_backends = (filters.OrderingFilter,)
+    ordering = ('username',)
 
 
 class UserAPI(APIView):
