@@ -4,8 +4,8 @@ from .auth_user_view import (MyUserViewSet,
                              UserAPI,)
 from .review_comment_view import ReviewViewSet, CommentViewSet
 from .title_view import TitleViewSet
-from .category_view import CategoryList, CategoryDetail
-from .genre_view import GenreList, GenreDetail
+from .category_view import CategoryViewSet
+from .genre_view import GenreViewSet
 
 __all__ = [
     'MyUserViewSet',
@@ -15,8 +15,6 @@ __all__ = [
     'ReviewViewSet',
     'CommentViewSet',
     'TitleViewSet',
-    'CategoryList',
-    'CategoryDetail',
-    'GenreList',
-    'GenreDetail',
+    'CategoryViewSet',
+    'GenreViewSet',
 ]

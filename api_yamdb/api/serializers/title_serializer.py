@@ -1,3 +1,5 @@
+import statistics
+
 from rest_framework import serializers
 
 from reviews.models import Category, Genre, Title
@@ -29,10 +31,19 @@ class TitleSerializer(serializers.ModelSerializer):
     year = serializers.IntegerField()
     category = CategoryField(queryset=Category.objects.all())
     genre = GenreListField(queryset=Genre.objects.all(), many=True)
-    # rating field to be added
+    rating = serializers.SerializerMethodField()
 
     class Meta:
-        # rating field to be added
-        fields = ('id', 'name', 'year', 'description',
-                  'genre', 'category')
+        fields = ('id', 'name', 'year', 'rating',
+                  'description', 'genre', 'category')
         model = Title
+
+    def get_rating(self, obj):
+        if obj.reviews.exists():
+            this_title_reviews = obj.reviews.all()
+            scores_list = []
+            for review in this_title_reviews:
+                scores_list.append(review.score)
+            rating = statistics.mean(scores_list)
+            return rating
+        return None
