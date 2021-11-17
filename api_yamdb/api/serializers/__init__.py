@@ -1,9 +1,10 @@
-from .auth_serializers import SendConfirmationCodeSerializer, CompareConfirmationCodesSerializer
-from .user_serializer import MyUserSerializer
+from .auth_serializers import (CompareConfirmationCodesSerializer,
+                               SendConfirmationCodeSerializer)
 from .category_serializer import CategorySerializer
 from .genre_serializer import GenreSerializer
-from .review_comment_serializers import ReviewSerializer, CommentSerializer
+from .review_comment_serializers import CommentSerializer, ReviewSerializer
 from .title_serializer import TitleSerializer
+from .user_serializer import MyUserSerializer
 
 __all__ = [
     'SendConfirmationCodeSerializer',

@@ -1,7 +1,6 @@
-from rest_framework import filters, viewsets, mixins
-
 from api.permissions import AdminOrReadOnly
 from api.serializers import GenreSerializer
+from rest_framework import filters, mixins, viewsets
 from reviews.models import Genre
 
 

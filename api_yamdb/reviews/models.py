@@ -1,6 +1,5 @@
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
-
 from users.models import MyUser as User
 
 

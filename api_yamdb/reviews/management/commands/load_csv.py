@@ -3,8 +3,7 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-
-from reviews.models import Category, Comment, Genre, Review, Title, Genre_Title
+from reviews.models import Category, Comment, Genre, Genre_Title, Review, Title
 from users.models import MyUser as User
 
 MODEL_NAME_FILE = {
