@@ -3,6 +3,9 @@ from .auth_user_view import (MyUserViewSet,
                              compare_confirmation_code,
                              UserAPI,)
 from .review_comment_view import ReviewViewSet, CommentViewSet
+from .title_view import TitleViewSet
+from .category_view import CategoryViewSet
+from .genre_view import GenreViewSet
 
 __all__ = [
     'MyUserViewSet',
@@ -11,4 +14,7 @@ __all__ = [
     'UserAPI',
     'ReviewViewSet',
     'CommentViewSet',
+    'TitleViewSet',
+    'CategoryViewSet',
+    'GenreViewSet',
 ]
