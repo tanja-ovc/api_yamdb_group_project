@@ -32,6 +32,8 @@ class AdminAuthorModeratorOrReadOnly(permissions.BasePermission):
         3) админов.
     """
     def has_permission(self, request, view):
+        if request.user.is_authenticated:
+            return True
         return request.method in permissions.SAFE_METHODS
 
     def has_object_permission(self, request, view, obj):

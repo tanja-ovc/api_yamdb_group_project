@@ -2,7 +2,7 @@ from rest_framework import viewsets
 
 from django.shortcuts import get_object_or_404
 
-from reviews.models import Title
+from reviews.models import Title, Review
 from api.serializers import ReviewSerializer, CommentSerializer
 from api.permissions import AdminAuthorModeratorOrReadOnly
 
@@ -28,3 +28,8 @@ class CommentViewSet(viewsets.ModelViewSet):
         title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
         review = title.reviews.get(pk=self.kwargs.get('review_id'))
         return review.comments.all()
+
+    def perform_create(self, serializer):
+        title = get_object_or_404(Title, pk=self.kwargs.get('title_id'))
+        review = title.reviews.get(pk=self.kwargs.get('review_id'))
+        serializer.save(author=self.request.user, review=review)
