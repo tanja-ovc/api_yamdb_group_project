@@ -26,15 +26,28 @@ def send_confirmation_code(request):
     email = request.data.get('email')
     username = request.data.get('username')
     if username == 'me':
-        return Response('Пользователя с таким именем создать нельзя', status=status.HTTP_400_BAD_REQUEST)
-    if MyUser.objects.filter(email=email).exists() or MyUser.objects.filter(username=username).exists():
-        return Response('Такой email уже зарегистрирован', status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            'Пользователя с таким именем создать нельзя',
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    if (
+            MyUser.objects.filter(email=email).exists()
+            or MyUser.objects.filter(username=username).exists()
+    ):
+        return Response(
+            'Такой email уже зарегистрирован',
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     if serializer.is_valid():
         confirmation_code = generate_confirmation_code()
         MyUser.objects.update_or_create(
             defaults={
-                'confirmation_code': make_password(confirmation_code, salt=None, hasher='argon2')
+                'confirmation_code': make_password(
+                    confirmation_code,
+                    salt=None,
+                    hasher='argon2'
+                )
             },
             email=email,
             username=username,
@@ -72,14 +85,24 @@ class UserAPI(APIView):
             user = get_object_or_404(MyUser, username=request.user.username)
             serializer = MyUserSerializer(user)
             return Response(serializer.data)
-        return Response('Для просмотра нужно авторизоваться', status=status.HTTP_401_UNAUTHORIZED)
+        return Response(
+            'Для просмотра нужно авторизоваться',
+            status=status.HTTP_401_UNAUTHORIZED
+        )
 
     def patch(self, request):
         if request.user.is_authenticated:
             user = get_object_or_404(MyUser, username=request.user.username)
-            serializer = MyUserSerializer(user, data=request.data, partial=True)
+            serializer = MyUserSerializer(
+                user,
+                data=request.data,
+                partial=True
+            )
             if serializer.is_valid():
                 serializer.validated_data.pop('role', None)
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response('Для изменения необходимо авторизоваться', status=status.HTTP_401_UNAUTHORIZED)
+        return Response(
+            'Для изменения необходимо авторизоваться',
+            status=status.HTTP_401_UNAUTHORIZED
+        )

@@ -2,7 +2,7 @@ from api.permissions import AdminAuthorModeratorOrReadOnly
 from api.serializers import CommentSerializer, ReviewSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from reviews.models import Review, Title
+from reviews.models import Title
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
