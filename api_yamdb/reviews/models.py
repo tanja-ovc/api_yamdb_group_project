@@ -49,13 +49,13 @@ class Review(models.Model):
         verbose_name='Автор'
     )
     score = models.PositiveSmallIntegerField(
-        'Оценка',
+        verbose_name='Оценка',
         validators=[
             MinValueValidator(1),
             MaxValueValidator(10)
         ]
     )
-    pub_date = models.DateTimeField('Date of publication', auto_now_add=True)
+    pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
 
     class Meta:
         constraints = (
@@ -76,7 +76,7 @@ class Comment(models.Model):
         Review, on_delete=models.CASCADE, related_name='comments',
         verbose_name='Отзыв'
     )
-    text = models.TextField('Текст')
+    text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='comments',
         verbose_name='Автор'
