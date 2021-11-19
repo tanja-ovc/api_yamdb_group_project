@@ -43,7 +43,7 @@ class Review(models.Model):
         Title, on_delete=models.CASCADE, related_name='reviews',
         verbose_name='Произведение'
     )
-    text = models.TextField('Text')
+    text = models.TextField(verbose_name='Текст')
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='reviews',
         verbose_name='Автор'
