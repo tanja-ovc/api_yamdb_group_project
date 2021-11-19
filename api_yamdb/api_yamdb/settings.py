@@ -108,9 +108,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 5
 }
 
-JWT_AUTH = {
-    'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=7 * 24 * 3600),
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(days=3),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
 }
 
 AUTH_USER_MODEL = 'users.MyUser'
