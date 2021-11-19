@@ -2,10 +2,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
 
-<<<<<<< HEAD
 from api.validators import year_validator
-=======
->>>>>>> master
 from users.models import MyUser as User
 
 
