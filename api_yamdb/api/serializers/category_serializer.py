@@ -5,5 +5,5 @@ from reviews.models import Category
 class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('name', 'slug')
         model = Category
+        exclude = ('id',)
