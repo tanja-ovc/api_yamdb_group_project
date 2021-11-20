@@ -1,13 +1,11 @@
+from api.mixins import ListCreateDestroyMixin
 from api.permissions import AdminOrReadOnly
 from api.serializers import GenreSerializer
-from rest_framework import filters, mixins, viewsets
+from rest_framework import filters
 from reviews.models import Genre
 
 
-class GenreViewSet(mixins.CreateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.ListModelMixin,
-                   viewsets.GenericViewSet):
+class GenreViewSet(ListCreateDestroyMixin):
     lookup_field = 'slug'
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
