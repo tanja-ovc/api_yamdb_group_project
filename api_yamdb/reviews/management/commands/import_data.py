@@ -18,16 +18,16 @@ NAME_MODEL_FILE = {
 }
 
 
-def get_csv_file(filename):
-    return os.path.join(settings.BASE_DIR, 'static', 'data', filename)
-
-
-def clear_model(model):
-    model.objects.all().delete()
-
-
 class Command(BaseCommand):
     help = 'Load data from csv file to model'
+
+    @staticmethod
+    def get_csv_file(filename):
+        return os.path.join(settings.BASE_DIR, 'static', 'data', filename)
+
+    @staticmethod
+    def clear_model(model):
+        model.objects.all().delete()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -37,9 +37,9 @@ class Command(BaseCommand):
 
     def load_model(self, model_name, field_names):
         model, file_path = NAME_MODEL_FILE.get(model_name)
-        with open(get_csv_file(file_path)) as file:
+        with open(self.get_csv_file(file_path)) as file:
             reader = csv.reader(file, delimiter=',')
-            clear_model(model)
+            self.clear_model(model)
             line = 0
             for row in reader:
                 if row != '' and line > 0:
@@ -62,7 +62,7 @@ class Command(BaseCommand):
         self.load_model('genre', ['id', 'name', 'slug'])
 
     def adding_genre_to_title(self):
-        with open(get_csv_file('genre_title.csv')) as file:
+        with open(self.get_csv_file('genre_title.csv')) as file:
             reader = csv.reader(file, delimiter=',')
             line = 0
             for row in reader:
