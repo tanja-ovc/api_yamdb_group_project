@@ -3,7 +3,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register('users', views.MyUserViewSet)
+router.register('users', views.CustomUserViewSet)
 router.register('titles', views.TitleViewSet, basename='titles')
 router.register('genres', views.GenreViewSet, basename='genres')
 router.register('categories', views.CategoryViewSet, basename='categories')

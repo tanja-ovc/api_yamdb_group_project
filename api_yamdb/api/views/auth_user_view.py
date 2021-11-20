@@ -3,7 +3,7 @@ import string
 
 from api.permissions import AdminPermissions
 from api.serializers import (CompareConfirmationCodesSerializer,
-                             MyUserSerializer, SendConfirmationCodeSerializer)
+                             CustomUserSerializer, SendConfirmationCodeSerializer)
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
-from users.models import MyUser
+from users.models import CustomUser
 
 
 def generate_confirmation_code():
@@ -23,25 +23,24 @@ def generate_confirmation_code():
 @api_view(['POST'])
 def send_confirmation_code(request):
     serializer = SendConfirmationCodeSerializer(data=request.data)
-    email = request.data.get('email')
-    username = request.data.get('username')
-    if username == 'me':
-        return Response(
-            'Пользователя с таким именем создать нельзя',
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    if (
-            MyUser.objects.filter(email=email).exists()
-            or MyUser.objects.filter(username=username).exists()
-    ):
-        return Response(
-            'Такой email уже зарегистрирован',
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
     if serializer.is_valid():
+        email = serializer.validated_data.get('email')
+        username = serializer.validated_data.get('username')
+        if username == 'me':
+            return Response(
+                'Пользователя с таким именем создать нельзя',
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if (
+                CustomUser.objects.filter(email=email).exists()
+                or CustomUser.objects.filter(username=username).exists()
+        ):
+            return Response(
+                'Такой email уже зарегистрирован',
+                status=status.HTTP_400_BAD_REQUEST
+            )
         confirmation_code = generate_confirmation_code()
-        MyUser.objects.update_or_create(
+        CustomUser.objects.update_or_create(
             defaults={
                 'confirmation_code': make_password(
                     confirmation_code,
@@ -65,16 +64,16 @@ def compare_confirmation_code(request):
     if serializer.is_valid():
         username = request.data.get('username')
         confirmation_code = request.data.get('confirmation_code')
-        user = get_object_or_404(MyUser, username=username)
+        user = get_object_or_404(CustomUser, username=username)
         if check_password(confirmation_code, user.confirmation_code):
             return Response({'token': f'{AccessToken.for_user(user)}'})
         return Response(status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MyUserViewSet(viewsets.ModelViewSet):
-    queryset = MyUser.objects.all()
-    serializer_class = MyUserSerializer
+class CustomUserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
     permission_classes = (AdminPermissions,)
     lookup_field = 'username'
     filter_backends = (filters.OrderingFilter,)
@@ -84,8 +83,8 @@ class MyUserViewSet(viewsets.ModelViewSet):
 class UserAPI(APIView):
     def get(self, request):
         if request.user.is_authenticated:
-            user = get_object_or_404(MyUser, username=request.user.username)
-            serializer = MyUserSerializer(user)
+            user = get_object_or_404(CustomUser, username=request.user.username)
+            serializer = CustomUserSerializer(user)
             return Response(serializer.data)
         return Response(
             'Для просмотра нужно авторизоваться',
@@ -94,8 +93,8 @@ class UserAPI(APIView):
 
     def patch(self, request):
         if request.user.is_authenticated:
-            user = get_object_or_404(MyUser, username=request.user.username)
-            serializer = MyUserSerializer(
+            user = get_object_or_404(CustomUser, username=request.user.username)
+            serializer = CustomUserSerializer(
                 user,
                 data=request.data,
                 partial=True

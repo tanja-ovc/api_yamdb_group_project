@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
 
-class MyUserManager(UserManager):
+class CustomUserManager(UserManager):
     def create_superuser(
             self,
             email,
@@ -28,7 +28,7 @@ class MyUserManager(UserManager):
         return user
 
 
-class MyUser(AbstractUser):
+class CustomUser(AbstractUser):
     email = models.EmailField(
         help_text='email address',
         blank=False,
@@ -55,4 +55,4 @@ class MyUser(AbstractUser):
         default='user'
     )
 
-    objects = MyUserManager()
+    objects = CustomUserManager()

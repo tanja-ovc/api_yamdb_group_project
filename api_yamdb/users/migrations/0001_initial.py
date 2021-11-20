@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='MyUser',
+            name='CustomUser',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('password', models.CharField(max_length=128, verbose_name='password', blank=True, null=True, default=None)),
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
             managers=[
-                ('objects', users.models.MyUserManager()),
+                ('objects', users.models.CustomUserManager()),
             ],
         ),
     ]
