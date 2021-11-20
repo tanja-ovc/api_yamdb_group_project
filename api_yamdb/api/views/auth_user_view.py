@@ -1,17 +1,19 @@
 import random
 import string
 
-from api.permissions import AdminPermissions
-from api.serializers import (CompareConfirmationCodesSerializer,
-                             MyUserSerializer, SendConfirmationCodeSerializer)
-from django.contrib.auth.hashers import check_password, make_password
-from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import AccessToken
+
+from django.contrib.auth.hashers import check_password, make_password
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+
+from api.permissions import AdminPermissions
+from api.serializers import (CompareConfirmationCodesSerializer,
+                             MyUserSerializer, SendConfirmationCodeSerializer)
 from users.models import MyUser
 
 
