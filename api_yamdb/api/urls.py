@@ -19,8 +19,8 @@ router.register(
 )
 
 urlpatterns = [
-    path('v1/auth/signup/', views.send_confirmation_code),
-    path('v1/auth/token/', views.compare_confirmation_code),
+    path('v1/auth/signup/', views.send_confirmation_code, name='signup'),
+    path('v1/auth/token/', views.compare_confirmation_code, name='token'),
     path('v1/users/me/', views.UserAPI.as_view()),
     path('v1/', include(router.urls)),
 ]

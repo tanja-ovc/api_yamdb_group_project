@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
+from api_yamdb.settings import PROJECT_SETTINGS
 
 
 class CustomUserManager(UserManager):
@@ -19,7 +20,7 @@ class CustomUserManager(UserManager):
             is_superuser=True,
         )
         user.is_admin = True
-        user.role = 'admin'
+        user.role = PROJECT_SETTINGS['role']['admin']
         user.set_password(password)
         user.confirmation_code = make_password(
             '00000', salt=None, hasher='argon2'
@@ -44,9 +45,9 @@ class CustomUser(AbstractUser):
     )
 
     ROLE_CHOICE = [
-        ('user', 'Пользователь'),
-        ('moderator', 'Модератор'),
-        ('admin', 'Админ')
+        PROJECT_SETTINGS['role']['user'],
+        PROJECT_SETTINGS['role']['moderator'],
+        PROJECT_SETTINGS['role']['admin'],
     ]
 
     role = models.CharField(

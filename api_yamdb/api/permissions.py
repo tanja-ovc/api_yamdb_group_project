@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from api_yamdb.settings import PROJECT_SETTINGS
 
 
 class AdminPermissions(permissions.BasePermission):
@@ -7,7 +8,8 @@ class AdminPermissions(permissions.BasePermission):
     """
     def has_permission(self, request, view):
         if request.user.is_authenticated:
-            return request.user.is_superuser or request.user.role == 'admin'
+            return (request.user.is_superuser
+                    or request.user.role == PROJECT_SETTINGS['role']['admin'][0])
         return False
 
 
@@ -22,7 +24,7 @@ class AdminOrReadOnly(permissions.BasePermission):
         if request.user.is_authenticated:
             return bool(
                 request.user.is_superuser
-                or request.user.role == 'admin'
+                or request.user.role == PROJECT_SETTINGS['role']['admin'][0]
             )
 
 
@@ -43,8 +45,8 @@ class AdminAuthorModeratorOrReadOnly(permissions.BasePermission):
         if request.user.is_authenticated:
             return bool(
                 obj.author == request.user
-                or request.user.role == 'moderator'
-                or request.user.role == 'admin'
+                or request.user.role == PROJECT_SETTINGS['role']['moderator'][0]
+                or request.user.role == PROJECT_SETTINGS['role']['admin'][0]
                 or request.user.is_superuser
             )
         elif request.method in permissions.SAFE_METHODS:

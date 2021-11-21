@@ -1,6 +1,8 @@
 import datetime
 import os
 
+from django.conf import settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
@@ -117,3 +119,12 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
+
+PROJECT_SETTINGS = {
+    'support_email': 'support@yamdb.ru',
+    'role': {
+        'admin': ('admin', 'Админ'),
+        'moderator': ('moderator', 'Модератор'),
+        'user': ('user', 'Пользователь'),
+    },
+}

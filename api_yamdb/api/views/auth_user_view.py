@@ -4,6 +4,8 @@ import string
 from api.permissions import AdminPermissions
 from api.serializers import (CompareConfirmationCodesSerializer,
                              CustomUserSerializer, SendConfirmationCodeSerializer)
+from api_yamdb.settings import PROJECT_SETTINGS
+from django.db.models import Q
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
@@ -23,7 +25,7 @@ def generate_confirmation_code():
 @api_view(['POST'])
 def send_confirmation_code(request):
     serializer = SendConfirmationCodeSerializer(data=request.data)
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
         email = serializer.validated_data.get('email')
         username = serializer.validated_data.get('username')
         if username == 'me':
@@ -32,8 +34,7 @@ def send_confirmation_code(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         if (
-                CustomUser.objects.filter(email=email).exists()
-                or CustomUser.objects.filter(username=username).exists()
+                CustomUser.objects.filter(Q(email=email) | Q(username=username))
         ):
             return Response(
                 'Такой email уже зарегистрирован',
@@ -53,22 +54,19 @@ def send_confirmation_code(request):
         )
         subject = 'Your confirmation code for YaMDb'
         message = f'Код подтверждения {confirmation_code}'
-        send_mail(subject, message, 'support@yamdb.ru', [email])
+        send_mail(subject, message, PROJECT_SETTINGS['support_email'], [email])
         return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['POST'])
 def compare_confirmation_code(request):
     serializer = CompareConfirmationCodesSerializer(data=request.data)
-    if serializer.is_valid():
-        username = request.data.get('username')
-        confirmation_code = request.data.get('confirmation_code')
+    if serializer.is_valid(raise_exception=True):
+        username = serializer.validated_data.get('username')
+        confirmation_code = serializer.validated_data.get('confirmation_code')
         user = get_object_or_404(CustomUser, username=username)
         if check_password(confirmation_code, user.confirmation_code):
             return Response({'token': f'{AccessToken.for_user(user)}'})
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CustomUserViewSet(viewsets.ModelViewSet):
@@ -83,8 +81,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 class UserAPI(APIView):
     def get(self, request):
         if request.user.is_authenticated:
-            user = get_object_or_404(CustomUser, username=request.user.username)
-            serializer = CustomUserSerializer(user)
+            serializer = CustomUserSerializer(request.user)
             return Response(serializer.data)
         return Response(
             'Для просмотра нужно авторизоваться',
@@ -93,13 +90,12 @@ class UserAPI(APIView):
 
     def patch(self, request):
         if request.user.is_authenticated:
-            user = get_object_or_404(CustomUser, username=request.user.username)
             serializer = CustomUserSerializer(
-                user,
+                request.user,
                 data=request.data,
                 partial=True
             )
-            if serializer.is_valid():
+            if serializer.is_valid(raise_exception=True):
                 serializer.validated_data.pop('role', None)
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
