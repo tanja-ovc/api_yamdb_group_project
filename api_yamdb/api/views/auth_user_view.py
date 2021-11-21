@@ -2,17 +2,17 @@ import random
 import string
 
 from rest_framework import filters, status, viewsets
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from django.db.models import Q
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.mail import send_mail
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
-from api_yamdb.settings import PROJECT_SETTINGS
 from api.permissions import AdminPermissions, SelfOrAdmin
+from api_yamdb.settings import PROJECT_SETTINGS
 from api.serializers import (CompareConfirmationCodesSerializer,
                              CustomUserSerializer,
                              SendConfirmationCodeSerializer)
