@@ -2,8 +2,10 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
+from api_yamdb.settings import PROJECT_SETTINGS
 
-class MyUserManager(UserManager):
+
+class CustomUserManager(UserManager):
     def create_superuser(
             self,
             email,
@@ -19,7 +21,7 @@ class MyUserManager(UserManager):
             is_superuser=True,
         )
         user.is_admin = True
-        user.role = 'admin'
+        user.role = PROJECT_SETTINGS['role']['admin']
         user.set_password(password)
         user.confirmation_code = make_password(
             '00000', salt=None, hasher='argon2'
@@ -28,7 +30,7 @@ class MyUserManager(UserManager):
         return user
 
 
-class MyUser(AbstractUser):
+class CustomUser(AbstractUser):
     email = models.EmailField(
         help_text='email address',
         blank=False,
@@ -44,15 +46,24 @@ class MyUser(AbstractUser):
     )
 
     ROLE_CHOICE = [
-        ('user', 'Пользователь'),
-        ('moderator', 'Модератор'),
-        ('admin', 'Админ')
+        PROJECT_SETTINGS['role']['user'],
+        PROJECT_SETTINGS['role']['moderator'],
+        PROJECT_SETTINGS['role']['admin'],
     ]
 
     role = models.CharField(
         max_length=20,
         choices=ROLE_CHOICE,
-        default='user'
+        default=PROJECT_SETTINGS['role']['user'][0]
     )
 
-    objects = MyUserManager()
+    @property
+    def is_administrator(self):
+        return (self.role == self.ROLE_CHOICE[2][0]
+                or self.is_superuser)
+
+    @property
+    def is_moderator(self):
+        return self.role == self.ROLE_CHOICE[1][0]
+
+    objects = CustomUserManager()

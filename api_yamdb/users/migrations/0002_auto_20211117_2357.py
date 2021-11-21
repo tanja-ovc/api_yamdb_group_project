@@ -11,12 +11,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='myuser',
+            model_name='Customuser',
             name='is_superuser',
             field=models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status'),
         ),
         migrations.AlterField(
-            model_name='myuser',
+            model_name='Customuser',
             name='password',
             field=models.CharField(max_length=128, verbose_name='password'),
         ),

@@ -1,6 +1,8 @@
 import datetime
 import os
 
+from django.utils.translation import gettext_lazy as _
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##zgl9(vs'
@@ -113,7 +115,16 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=7),
 }
 
-AUTH_USER_MODEL = 'users.MyUser'
+AUTH_USER_MODEL = 'users.CustomUser'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
+
+PROJECT_SETTINGS = {
+    'support_email': 'support@yamdb.ru',
+    'role': {
+        'admin': ('admin', _('Админ')),
+        'moderator': ('moderator', _('Модератор')),
+        'user': ('user', _('Пользователь')),
+    },
+}
