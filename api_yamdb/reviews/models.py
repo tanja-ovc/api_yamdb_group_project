@@ -1,8 +1,7 @@
+from api.validators import year_validator
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models.constraints import UniqueConstraint
-
-from api.validators import year_validator
 from users.models import CustomUser as User
 
 
