@@ -1,6 +1,9 @@
-from api import views
-from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
+from django.urls import include, path
+
+from api import views
+
 
 router = DefaultRouter()
 router.register('users', views.CustomUserViewSet)
@@ -21,6 +24,5 @@ router.register(
 urlpatterns = [
     path('v1/auth/signup/', views.send_confirmation_code, name='signup'),
     path('v1/auth/token/', views.compare_confirmation_code, name='token'),
-    path('v1/users/me/', views.UserAPI.as_view()),
     path('v1/', include(router.urls)),
 ]

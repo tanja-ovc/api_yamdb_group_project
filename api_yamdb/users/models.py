@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
+
 from api_yamdb.settings import PROJECT_SETTINGS
 
 
@@ -53,7 +54,16 @@ class CustomUser(AbstractUser):
     role = models.CharField(
         max_length=20,
         choices=ROLE_CHOICE,
-        default='user'
+        default=PROJECT_SETTINGS['role']['user'][0]
     )
+
+    @property
+    def is_administrator(self):
+        return (self.role == self.ROLE_CHOICE[2][0]
+                or self.is_superuser)
+
+    @property
+    def is_moderator(self):
+        return self.role == self.ROLE_CHOICE[1][0]
 
     objects = CustomUserManager()

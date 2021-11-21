@@ -1,5 +1,4 @@
 from rest_framework import permissions
-from api_yamdb.settings import PROJECT_SETTINGS
 
 
 class AdminPermissions(permissions.BasePermission):
@@ -7,10 +6,8 @@ class AdminPermissions(permissions.BasePermission):
     Права на создание, удаление и изменение пользователей.
     """
     def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return (request.user.is_superuser
-                    or request.user.role == PROJECT_SETTINGS['role']['admin'][0])
-        return False
+        return (request.user.is_authenticated
+                and request.user.is_administrator)
 
 
 class AdminOrReadOnly(permissions.BasePermission):
@@ -19,13 +16,9 @@ class AdminOrReadOnly(permissions.BasePermission):
     Права для всех на чтение.
     """
     def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        if request.user.is_authenticated:
-            return bool(
-                request.user.is_superuser
-                or request.user.role == PROJECT_SETTINGS['role']['admin'][0]
-            )
+        return (request.user.is_authenticated
+                and request.user.is_administrator
+                or request.method in permissions.SAFE_METHODS)
 
 
 class AdminAuthorModeratorOrReadOnly(permissions.BasePermission):
@@ -37,18 +30,20 @@ class AdminAuthorModeratorOrReadOnly(permissions.BasePermission):
         3) админов.
     """
     def has_permission(self, request, view):
-        if request.user.is_authenticated:
-            return True
-        return request.method in permissions.SAFE_METHODS
+        return (request.method in permissions.SAFE_METHODS
+                or request.user.is_authenticated)
 
     def has_object_permission(self, request, view, obj):
-        if request.user.is_authenticated:
-            return bool(
-                obj.author == request.user
-                or request.user.role == PROJECT_SETTINGS['role']['moderator'][0]
-                or request.user.role == PROJECT_SETTINGS['role']['admin'][0]
-                or request.user.is_superuser
-            )
-        elif request.method in permissions.SAFE_METHODS:
-            return True
-        return False
+        return (request.method in permissions.SAFE_METHODS
+                or obj.author == request.user
+                or request.user.is_moderator
+                or request.user.is_administrator
+                or request.user.is_superuser)
+
+
+class SelfOrAdmin(permissions.BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj or request.user.is_administrator

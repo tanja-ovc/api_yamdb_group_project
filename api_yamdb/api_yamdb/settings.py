@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -123,8 +123,8 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'emails')
 PROJECT_SETTINGS = {
     'support_email': 'support@yamdb.ru',
     'role': {
-        'admin': ('admin', 'Админ'),
-        'moderator': ('moderator', 'Модератор'),
-        'user': ('user', 'Пользователь'),
+        'admin': ('admin', _('Админ')),
+        'moderator': ('moderator', _('Модератор')),
+        'user': ('user', _('Пользователь')),
     },
 }

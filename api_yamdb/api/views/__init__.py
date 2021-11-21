@@ -1,4 +1,4 @@
-from .auth_user_view import (CustomUserViewSet, UserAPI, compare_confirmation_code,
+from .auth_user_view import (CustomUserViewSet, compare_confirmation_code,
                              send_confirmation_code)
 from .category_view import CategoryViewSet
 from .genre_view import GenreViewSet
@@ -9,7 +9,6 @@ __all__ = [
     'CustomUserViewSet',
     'send_confirmation_code',
     'compare_confirmation_code',
-    'UserAPI',
     'ReviewViewSet',
     'CommentViewSet',
     'TitleViewSet',

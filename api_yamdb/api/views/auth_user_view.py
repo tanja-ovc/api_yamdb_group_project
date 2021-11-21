@@ -1,19 +1,21 @@
 import random
 import string
 
-from api.permissions import AdminPermissions
-from api.serializers import (CompareConfirmationCodesSerializer,
-                             CustomUserSerializer, SendConfirmationCodeSerializer)
-from api_yamdb.settings import PROJECT_SETTINGS
+from rest_framework import filters, status, viewsets
+from rest_framework.decorators import api_view, action
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import AccessToken
+
 from django.db.models import Q
 from django.contrib.auth.hashers import check_password, make_password
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from rest_framework import filters, status, viewsets
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import AccessToken
+
+from api_yamdb.settings import PROJECT_SETTINGS
+from api.permissions import AdminPermissions, SelfOrAdmin
+from api.serializers import (CompareConfirmationCodesSerializer,
+                             CustomUserSerializer,
+                             SendConfirmationCodeSerializer)
 from users.models import CustomUser
 
 
@@ -34,7 +36,9 @@ def send_confirmation_code(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         if (
-                CustomUser.objects.filter(Q(email=email) | Q(username=username))
+                CustomUser.objects.filter(
+                    Q(email=email) | Q(username=username)
+                )
         ):
             return Response(
                 'Такой email уже зарегистрирован',
@@ -57,6 +61,7 @@ def send_confirmation_code(request):
         send_mail(subject, message, PROJECT_SETTINGS['support_email'], [email])
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 @api_view(['POST'])
 def compare_confirmation_code(request):
     serializer = CompareConfirmationCodesSerializer(data=request.data)
@@ -77,29 +82,32 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.OrderingFilter,)
     ordering = ('username',)
 
-
-class UserAPI(APIView):
-    def get(self, request):
-        if request.user.is_authenticated:
-            serializer = CustomUserSerializer(request.user)
-            return Response(serializer.data)
-        return Response(
-            'Для просмотра нужно авторизоваться',
-            status=status.HTTP_401_UNAUTHORIZED
-        )
-
-    def patch(self, request):
-        if request.user.is_authenticated:
-            serializer = CustomUserSerializer(
-                request.user,
-                data=request.data,
-                partial=True
+    @action(
+        detail=False,
+        methods=['get', 'patch'],
+        permission_classes=(SelfOrAdmin,)
+    )
+    def me(self, request):
+        if request.method == 'GET':
+            if request.user.is_authenticated:
+                serializer = CustomUserSerializer(request.user)
+                return Response(serializer.data)
+            return Response(
+                'Для просмотра нужно авторизоваться',
+                status=status.HTTP_401_UNAUTHORIZED
             )
-            if serializer.is_valid(raise_exception=True):
-                serializer.validated_data.pop('role', None)
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(
-            'Для изменения необходимо авторизоваться',
-            status=status.HTTP_401_UNAUTHORIZED
-        )
+        if request.method == 'PATCH':
+            if request.user.is_authenticated:
+                serializer = CustomUserSerializer(
+                    request.user,
+                    data=request.data,
+                    partial=True
+                )
+                if serializer.is_valid(raise_exception=True):
+                    serializer.validated_data.pop('role', None)
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(
+                'Для изменения необходимо авторизоваться',
+                status=status.HTTP_401_UNAUTHORIZED
+            )

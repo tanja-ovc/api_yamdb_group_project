@@ -1,6 +1,7 @@
+from rest_framework import filters, mixins, viewsets
+
 from api.permissions import AdminOrReadOnly
 from api.serializers import CategorySerializer
-from rest_framework import filters, mixins, viewsets
 from reviews.models import Category
 
 
