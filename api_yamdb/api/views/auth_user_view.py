@@ -110,4 +110,3 @@ class CustomUserViewSet(viewsets.ModelViewSet):
                 'Для изменения необходимо авторизоваться',
                 status=status.HTTP_401_UNAUTHORIZED
             )
-
