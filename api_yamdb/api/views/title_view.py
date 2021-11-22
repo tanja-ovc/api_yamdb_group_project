@@ -1,10 +1,11 @@
+from django.db.models import Avg
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, viewsets
+
 from api.filters import TitleFilter
 from api.permissions import AdminOrReadOnly
 from api.serializers.title_serializer import (TitleSerializerRead,
                                               TitleSerializerWrite)
-from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, viewsets
 from reviews.models import Title
 
 

@@ -1,7 +1,8 @@
+from rest_framework import filters
+
 from api.mixins import ListCreateDestroyMixin
 from api.permissions import AdminOrReadOnly
 from api.serializers import GenreSerializer
-from rest_framework import filters
 from reviews.models import Genre
 
 
