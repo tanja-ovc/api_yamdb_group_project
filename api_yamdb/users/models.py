@@ -39,7 +39,7 @@ class CustomUser(AbstractUser):
     bio = models.TextField(max_length=1000, blank=True)
     is_admin = models.BooleanField(default=False)
     confirmation_code = models.CharField(
-        max_length=20,
+        max_length=200,
         default=None,
         blank=True,
         null=True
